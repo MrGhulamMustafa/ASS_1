@@ -1,89 +1,269 @@
-Question_1:
-Read A;
-Read B;
-Sum=A+B;
-Print Sum;
+using System;
+using System.Collections.Generic;
 
-Question_2:
-A=2;
-while(A<=100);
-	Print A;
-	A=A+2;
+namespace MyApp
+{
+    // Abstract base class Book
+    internal abstract class Book
+    {
+        public string Title { get; set; }
+        public string Author { get; set; }
+        public string BookId { get; set; }
 
-Question_3:
-Read Year;
-if(Mod of Year with 4 is zero);
-	print That the year is leap year.
-else;
-print that the year is not leap year.
+        // Constructor
+        public Book(string title, string author, string bookId)
+        {
+            Title = title;
+            Author = author;
+            BookId = bookId;
+        }
 
-Question_4:
-Read Speed;
-Converted_Speed=(speed)x(0.621371);
+        // Abstract method to be implemented in derived classes
+        public abstract void DisplayInfo();
+    }
 
-Question_5:
-Read Number;
-Convert Number into Array;
-Find Last digit of The Array;
-if(Mod of Number with 7 is zero OR LastDigit is equal to 7);
-	print that number is Buzz.
-else;
-Print that number is not Buzz.
+    // Derived class Fiction
+    internal class Fiction : Book
+    {
+        // Constructor
+        public Fiction(string title, string author, string bookId) : base(title, author, bookId)
+        {
+        }
 
-Question_6:
-Get Number;
-I=1;
-while(I<=10);
-	print Number X I;
-	I=I+1;
-end;
+        // Implementing abstract method for Fiction class
+        public override void DisplayInfo()
+        {
+            Console.WriteLine($"Fiction Book - Title: {Title}, Author: {Author}, Book ID: {BookId}");
+            Console.WriteLine("This is a thrilling story for fiction lovers.");
+        }
+    }
 
-Question_7:
-Get Number;
-Declare a variable named Factorial and assign it 1;
-if(Number is equal to 0);
-	print 1;
-Else;
-	While(Number>0);
-		Factorial=Factorial x Number;
-	print Factorial;
+    // Derived class NonFiction
+    internal class NonFiction : Book
+    {
+        // Constructor
+        public NonFiction(string title, string author, string bookId) : base(title, author, bookId)
+        {
+        }
 
-Question_8:
-Get Number;
-IsPrime=True;
-While(Mod of Number with Half of the  Number is zero);
-	IsPrime=false;
-	Break The Statement;
-if(Number is greater than 1 and IsPrime is True);
-	print that the Number is Prime.
-Else;
-	Print that the Number is not prime.
+        // Implementing abstract method for NonFiction class
+        public override void DisplayInfo()
+        {
+            Console.WriteLine($"Non-Fiction Book - Title: {Title}, Author: {Author}, Book ID: {BookId}");
+            Console.WriteLine("This is a factual book for those seeking knowledge.");
+        }
+    }
 
-Question_9:
-Get A, B and C;
-if(A is equal to B and B is equal to C);
-	print Triangle is Equilatral.
-Else if ( A is equal to B or B is Equal to C);
-	print triangle is isoscelce.
-Else:
-	print triangle is scelene.
+    // Person class
+    internal class Person
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public string PersonId { get; set; }
 
-Question_10:
-Number of row is equal to 5
-i=1
-While (i<=row)
-	j=1
-	while(j<=i)
-		print star
-		end line
-		j=j+1
-	print an empty line
-	i=i+1
+        // Constructor
+        public Person(string name, int age, string personId)
+        {
+            Name = name;
+            Age = age;
+            PersonId = personId;
+        }
+    }
 
-Bonus_Question:
-Get Number;
-Convert Number into arrar;
-if(first digit of array is equal to last digit of array);
-	print the number is palindrome.
-else
-	print number is not palindrome.
+    // Librarian class inheriting from Person
+    internal class Librarian : Person
+    {
+        public string EmpId { get; set; }
+        public List<Book> IssuedBooks { get; set; }
+
+        // Constructor
+        public Librarian(string name, int age, string personId, string empId) : base(name, age, personId)
+        {
+            EmpId = empId;
+            IssuedBooks = new List<Book>();
+        }
+
+        // Method to issue a book to a user
+        public void IssueBook(Book book, Person user)
+        {
+            if (book != null)
+            {
+                IssuedBooks.Add(book);
+                Console.WriteLine($"The book '{book.Title}' is issued to {user.Name}");
+                Console.WriteLine($"Transaction logged: {user.Name} issued '{book.Title}'");
+            }
+            else
+            {
+                Console.WriteLine($"The book is not present");
+            }
+        }
+
+        // Method to return a book from a user
+        public void ReturnBook(Book book, Person user)
+        {
+            if (book != null)
+            {
+                IssuedBooks.Remove(book);
+                Console.WriteLine($"The book '{book.Title}' is returned by {user.Name}");
+                Console.WriteLine($"Transaction logged: '{book.Title}' returned by {user.Name}");
+            }
+            else
+            {
+                Console.WriteLine($"{user.Name} did not return the book");
+            }
+        }
+    }
+
+    // Library class
+    internal class Library
+    {
+        public string Name { get; set; }
+        public string ID { get; set; }
+        private List<Book> books;
+        private Librarian librarian;
+        private List<string> transactionHistory;
+
+        // Constructor
+        public Library(string name, string id, Librarian librarian)
+        {
+            Name = name;
+            ID = id;
+            books = new List<Book>();
+            this.librarian = librarian;
+            transactionHistory = new List<string>();
+        }
+
+        // Method to add a book to the library
+        public void AddBook(Book book)
+        {
+            if (!books.Contains(book))
+            {
+                books.Add(book);
+                Console.WriteLine($"Book '{book.Title}' added to the library.");
+                transactionHistory.Add($"Book '{book.Title}' added to the library.");
+            }
+            else
+            {
+                Console.WriteLine($"The book '{book.Title}' already exists.");
+            }
+        }
+
+        // Method to remove a book from the library
+        public void RemoveBook(string bookId)
+        {
+            Book bookToRemove = books.Find(b => b.BookId == bookId);
+            if (bookToRemove != null)
+            {
+                books.Remove(bookToRemove);
+                Console.WriteLine($"{bookToRemove.Title} is removed from the library.");
+                transactionHistory.Add($"{bookToRemove.Title} is removed from the library.");
+            }
+            else
+            {
+                Console.WriteLine($"Either the book with ID '{bookId}' is not present in library or already removed.");
+            }
+        }
+
+        // Method to view all books in the library
+        public void ViewBooks()
+        {
+            Console.WriteLine("Books in the library:");
+            foreach (Book book in books)
+            {
+                book.DisplayInfo();
+            }
+        }
+
+        // Method to search for a book by title
+        public void SearchBook(string title)
+        {
+            bool found = false;
+            foreach (Book book in books)
+            {
+                if (book.Title == title)
+                {
+                    book.DisplayInfo();
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                Console.WriteLine($"There is no book with the title '{title}' in the {Name} library.");
+            }
+        }
+
+        // Method to list all issued books
+        public void ListIssuedBooks()
+        {
+            Console.WriteLine("Issued books:");
+            foreach (Book book in librarian.IssuedBooks)
+            {
+                book.DisplayInfo();
+                Console.WriteLine("--------------------------------------------------");
+            }
+        }
+
+        // Method to display transaction history
+        public void DisplayTransactionHistory()
+        {
+            Console.WriteLine("\nTransaction History:");
+            foreach (string transaction in transactionHistory)
+            {
+                Console.WriteLine(transaction);
+            }
+        }
+    }
+
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            // Create instances of different types of books (Fiction and NonFiction)
+            Fiction fictionBook = new Fiction("The Lord of the Rings", "J.R.R. Tolkien", "FIC-001");
+            NonFiction nonFictionBook = new NonFiction("Sapiens: A Brief History of Humankind", "Yuval Noah Harari", "NFIC-001");
+
+            // Display book information using polymorphism
+            fictionBook.DisplayInfo();
+            Console.WriteLine();
+
+            nonFictionBook.DisplayInfo();
+            Console.WriteLine();
+
+            // Create librarian
+            Librarian librarian = new Librarian("Ghulam Mustafa", 24, "5599", "5599-Ghulam Mustafa");
+
+            // Create library
+            Library library = new Library("National Library", "1", librarian);
+
+            // Add books to the library
+            library.AddBook(fictionBook);
+            library.AddBook(nonFictionBook);
+
+            // Issue a book
+            Person user = new Person("Khurram Aziz", 23, "5577");
+            librarian.IssueBook(fictionBook, user);
+
+            // List issued books
+            library.ListIssuedBooks();
+
+            // Return a book
+            librarian.ReturnBook(fictionBook, user);
+
+            // List issued books again
+            library.ListIssuedBooks();
+
+            // Search for a book by title
+            library.SearchBook("Sapiens: A Brief History of Humankind");
+
+            // Remove a book from the library
+            library.RemoveBook("NFIC-001");
+
+            // View books in the library again
+            library.ViewBooks();
+
+            // Display transaction history
+            library.DisplayTransactionHistory();
+        }
+    }
+}
